@@ -1,0 +1,193 @@
+<div class="customer-details-container">
+  <!-- <div class="header">
+    
+    <h1>Customer Details</h1>
+    
+  </div> -->
+
+  <!-- Search Form -->
+  <div class="search-section" *ngIf="showSearchForm">
+    <div class="search-container">
+    <h2>Search Customer by Mobile Number</h2>
+    <form [formGroup]="searchForm" (ngSubmit)="searchByMobile()" class="search-form">
+      <div class="search-input-group">
+        <input 
+          type="tel" 
+          formControlName="mobileNumber"
+          placeholder="Enter 10-digit mobile number"
+          maxlength="10"
+          [class.error]="searchF['mobileNumber'].touched && searchF['mobileNumber'].errors"
+        />
+        <button type="submit" [disabled]="searchForm.invalid || isLoading">
+          <i class="fas fa-search"></i>
+          {{ isLoading ? 'Searching...' : 'Search' }}
+        </button>
+      </div>
+      <div class="error-message" *ngIf="searchF['mobileNumber'].touched && searchF['mobileNumber'].errors">
+        <span *ngIf="searchF['mobileNumber'].errors['required']">Mobile number is required</span>
+        <span *ngIf="searchF['mobileNumber'].errors['pattern']">Please enter a valid 10-digit mobile number</span>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="loading-container" *ngIf="isLoading">
+  <div class="spinner"></div>
+  <p>Loading customer details...</p>
+</div>
+
+<div class="error-container" *ngIf="errorMsg">
+  <div class="error-message">
+    <i class="fas fa-exclamation-triangle"></i>
+    {{ errorMsg }}
+  </div>
+  <button class="reset-btn" (click)="resetSearch()" *ngIf="showSearchForm">
+    <i class="fas fa-refresh"></i> Try Another Search
+  </button>
+</div>
+
+<form [formGroup]="customerForm" class="customer-form" *ngIf="customer && !isLoading">
+  <!-- Personal Information Section -->
+  <div class="form-section">
+    <h2>Personal Information</h2>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" formControlName="firstName"  />
+      </div>
+
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" formControlName="lastName"  />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" formControlName="email"  />
+      </div>
+
+      <div class="form-group">
+        <label>Mobile Number</label>
+        <input type="tel" formControlName="mobile"  />
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Address</label>
+      <textarea formControlName="address"  rows="3"></textarea>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Age</label>
+        <input type="number" formControlName="age"  />
+      </div>
+
+      <div class="form-group">
+        <label>Income Source</label>
+        <input type="text" formControlName="incomeSource"  />
+      </div>
+    </div>
+  </div>
+
+  <!-- Financial Information Section -->
+  <div class="form-section">
+    <h2>Financial Information</h2>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>Monthly Income</label>
+        <input type="text" [value]="formatCurrency(customer?.income)"  />
+      </div>
+
+      <div class="form-group">
+        <label>Budget</label>
+        <input type="text" [value]="formatCurrency(customer?.budget)"  />
+      </div>
+    </div>
+  </div>
+
+  <!-- Reference Information Section -->
+  <div class="form-section">
+    <h2>Reference Information</h2>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>Reference</label>
+        <input type="text" formControlName="reference"  />
+      </div>
+
+      <div class="form-group" *ngIf="shouldShowReferencePerson()">
+        <label>Reference Person</label>
+        <input type="text" formControlName="referencePerson"  />
+      </div>
+    </div>
+  </div>
+
+  <!-- Property Interests Section -->
+  <div class="form-section">
+    <h2>Property Interests</h2>
+    
+    <div class="property-interests" formGroupName="propertyInterests">
+      <div class="checkbox-group">
+        <div class="checkbox-item" *ngFor="let interest of propertyInterests">
+          <input 
+            type="checkbox"
+            [id]="interest.id"
+            [formControlName]="interest.id"
+          />
+          <label [for]="interest.id">{{ interest.label }}</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remarks and Follow-up Section -->
+  <div class="form-section">
+    <h2>Remarks & Follow-up</h2>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Attended By</label>
+        <input type="text" [formControl]="newAttendedBy" placeholder="Enter name" />
+        <div *ngIf="newAttendedBy.touched && newAttendedBy.invalid" class="error-message">
+          <span *ngIf="newAttendedBy.errors?.['required']">Attended By is required</span>
+          <span *ngIf="newAttendedBy.errors?.['minlength']">Minimum 2 characters</span>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Remarks</label>
+        <textarea [formControl]="newRemark" placeholder="Enter new remark" rows="4"></textarea>
+        <div *ngIf="newRemark.touched && newRemark.invalid" class="error-message">
+          <span *ngIf="newRemark.errors?.['required']">Remark is required</span>
+          <span *ngIf="newRemark.errors?.['minlength']">Minimum 5 characters</span>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-danger fw-bold" (click)="updateCustomer()" [disabled]="newRemark.invalid || newAttendedBy.invalid || isUpdating">
+      {{ isUpdating ? 'Updating...' : 'Update' }}
+    </button>
+  </div>
+
+  <!-- Additional Remarks History -->
+  <div class="form-section" *ngIf="customer?.remarks as remarks">
+    <ng-container *ngIf="remarks.length > 0">
+      <h2>Remarks History</h2>
+      <div class="remarks-history">
+        <div class="remark-item" *ngFor="let remark of remarks; let i = index">
+          <div class="remark-header">
+            <span class="remark-number">Remark #{{ i + 1 }}</span>
+            <span class="remark-date">{{ formatDate(remark?.visitDate) }}</span>
+          </div>
+          <div class="remark-content">
+            <p><strong>Attended By:</strong> {{ remark?.attendedBy }}</p>
+            <p><strong>Remark:</strong> {{ remark?.remark }}</p>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+</form>
+</div>

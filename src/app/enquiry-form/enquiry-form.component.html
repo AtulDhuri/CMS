@@ -1,0 +1,293 @@
+<div class="enquiry-form-container">
+  <div class="form-card">
+    <div class="form-header">
+      <h2>Property Enquiry Form</h2>
+      <p>Please fill in your details to help us assist you better</p>
+    </div>
+
+    <form [formGroup]="enquiryForm" (ngSubmit)="onSubmit()" class="enquiry-form">
+      
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h3>Personal Information</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input 
+              type="text" 
+              id="firstName"
+              formControlName="firstName"
+              placeholder="Enter your first name"
+              [class.error]="submitted && f['firstName'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['firstName'].errors">
+              <span *ngIf="f['firstName'].errors['required']">First name is required</span>
+              <span *ngIf="f['firstName'].errors['minlength']">First name must be at least 2 characters</span>
+              <span *ngIf="f['firstName'].errors['maxlength']">First name cannot exceed 50 characters</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input 
+              type="text" 
+              id="lastName"
+              formControlName="lastName"
+              placeholder="Enter your last name"
+              [class.error]="submitted && f['lastName'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['lastName'].errors">
+              <span *ngIf="f['lastName'].errors['required']">Last name is required</span>
+              <span *ngIf="f['lastName'].errors['minlength']">Last name must be at least 2 characters</span>
+              <span *ngIf="f['lastName'].errors['maxlength']">Last name cannot exceed 50 characters</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input 
+              type="email" 
+              id="email"
+              formControlName="email"
+              placeholder="Enter your email address"
+              [class.error]="submitted && f['email'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['email'].errors">
+              <span *ngIf="f['email'].errors['required']">Email is required</span>
+              <span *ngIf="f['email'].errors['email']">Please enter a valid email address</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="mobile">Mobile Number</label>
+            <input 
+              type="tel" 
+              id="mobile"
+              formControlName="mobile"
+              placeholder="Enter your 10-digit mobile number"
+              maxlength="10"
+              [class.error]="submitted && f['mobile'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['mobile'].errors">
+              <span *ngIf="f['mobile'].errors['required']">Mobile number is required</span>
+              <span *ngIf="f['mobile'].errors['pattern']">Please enter a valid 10-digit mobile number</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address</label>
+          <textarea 
+            id="address"
+            formControlName="address"
+            placeholder="Enter your complete address"
+            rows="4"
+            [class.error]="submitted && f['address'].errors"
+          ></textarea>
+          <div class="error-message" *ngIf="submitted && f['address'].errors">
+            <span *ngIf="f['address'].errors['required']">Address is required</span>
+            <span *ngIf="f['address'].errors['minlength']">Address must be at least 10 characters</span>
+            <span *ngIf="f['address'].errors['maxlength']">Address cannot exceed 500 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="age">Age</label>
+          <input 
+            type="number" 
+            id="age"
+            formControlName="age"
+            placeholder="Enter your age"
+            min="18"
+            max="100"
+            [class.error]="submitted && f['age'].errors"
+          />
+          <div class="error-message" *ngIf="submitted && f['age'].errors">
+            <span *ngIf="f['age'].errors['required']">Age is required</span>
+            <span *ngIf="f['age'].errors['min']">Age must be at least 18</span>
+            <span *ngIf="f['age'].errors['max']">Age cannot exceed 100</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Information Section -->
+      <div class="form-section">
+        <h3>Financial Information</h3>
+        
+        <div class="form-group">
+          <label for="incomeSource">Income Source</label>
+          <select 
+            id="incomeSource"
+            formControlName="incomeSource"
+            [class.error]="submitted && f['incomeSource'].errors"
+          >
+            <option value="">Select your income source</option>
+            <option *ngFor="let source of incomeSources" [value]="source.value">
+              {{ source.label }}
+            </option>
+          </select>
+          <div class="error-message" *ngIf="submitted && f['incomeSource'].errors">
+            <span *ngIf="f['incomeSource'].errors['required']">Please select your income source</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="monthlyIncome">Monthly Income (₹)</label>
+            <input 
+              type="text" 
+              id="monthlyIncome"
+              formControlName="monthlyIncome"
+              placeholder="Enter monthly income"
+              (input)="onNumberInput($event, 'monthlyIncome')"
+              (blur)="onNumberBlur($event, 'monthlyIncome')"
+              [class.error]="submitted && f['monthlyIncome'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['monthlyIncome'].errors">
+              <span *ngIf="f['monthlyIncome'].errors['required']">Monthly income is required</span>
+              <span *ngIf="f['monthlyIncome'].errors['min']">Monthly income must be at least ₹10,000</span>
+              <span *ngIf="f['monthlyIncome'].errors['max']">Monthly income cannot exceed ₹1,00,00,000</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="budget">Property Budget (₹)</label>
+            <input 
+              type="text" 
+              id="budget"
+              formControlName="budget"
+              placeholder="Enter property budget"
+              (input)="onNumberInput($event, 'budget')"
+              (blur)="onNumberBlur($event, 'budget')"
+              [class.error]="submitted && f['budget'].errors"
+            />
+            <div class="error-message" *ngIf="submitted && f['budget'].errors">
+              <span *ngIf="f['budget'].errors['required']">Property budget is required</span>
+              <span *ngIf="f['budget'].errors['min']">Property budget must be at least ₹1,00,000</span>
+              <span *ngIf="f['budget'].errors['max']">Property budget cannot exceed ₹10,00,00,000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reference Section -->
+      <div class="form-section">
+        <h3>How did you hear about us?</h3>
+        
+        <div class="form-group">
+          <label>Reference</label>
+          <div class="radio-group">
+            <div class="radio-item" *ngFor="let option of referenceOptions">
+              <input 
+                type="radio" 
+                [id]="option.value"
+                [value]="option.value"
+                formControlName="reference"
+                name="reference"
+              />
+              <label [for]="option.value">{{ option.label }}</label>
+            </div>
+          </div>
+          <div class="error-message" *ngIf="submitted && f['reference'].errors">
+            <span *ngIf="f['reference'].errors['required']">Please select how you heard about us</span>
+          </div>
+        </div>
+
+        <!-- Conditional Reference Person Field -->
+        <div class="form-group" *ngIf="shouldShowReferencePerson()">
+          <label for="referencePerson">Reference Person Name</label>
+          <input 
+            type="text" 
+            id="referencePerson"
+            formControlName="referencePerson"
+            placeholder="Enter the person's name who referred you"
+            [class.error]="submitted && f['referencePerson'].errors"
+          />
+          <div class="error-message" *ngIf="submitted && f['referencePerson'].errors">
+            <span *ngIf="f['referencePerson'].errors['required']">Reference person name is required</span>
+            <span *ngIf="f['referencePerson'].errors['minlength']">Name must be at least 2 characters</span>
+            <span *ngIf="f['referencePerson'].errors['maxlength']">Name cannot exceed 100 characters</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Property Interest Section -->
+      <div class="form-section">
+        <h3>Property Preferences</h3>
+        
+        <div class="form-group">
+          <label>Interested in</label>
+          <div class="checkbox-group" formGroupName="propertyInterests">
+            <div class="checkbox-item" *ngFor="let interest of propertyInterests">
+              <input 
+                type="checkbox" 
+                [id]="interest.value"
+                [value]="interest.value"
+                (change)="onInterestChange($event, interest.value)"
+                [checked]="propertyInterestsGroup.get(interest.value)?.value"
+              />
+              <label [for]="interest.value">{{ interest.label }}</label>
+            </div>
+          </div>
+          <div class="error-message" *ngIf="submitted && propertyInterestsGroup.errors?.['atLeastOneRequired']">
+            Please select at least one property type
+          </div>
+        </div>
+      </div>
+
+      <!-- Remarks and Attendance Section -->
+      <div class="form-section">
+        <h3>Additional Information</h3>
+        
+        <div class="form-group">
+          <label for="remarks">Remarks</label>
+          <textarea 
+            id="remarks"
+            formControlName="remarks"
+            placeholder="Enter detailed remarks about the customer interaction"
+            rows="4"
+            [class.error]="submitted && f['remarks'].errors"
+          ></textarea>
+          <div class="error-message" *ngIf="submitted && f['remarks'].errors">
+            <span *ngIf="f['remarks'].errors['required']">Remarks are required</span>
+            <span *ngIf="f['remarks'].errors['minlength']">Remarks must be at least 10 characters</span>
+            <span *ngIf="f['remarks'].errors['maxlength']">Remarks cannot exceed 1000 characters</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="attendedBy">Attended By</label>
+          <input 
+            type="text" 
+            id="attendedBy"
+            formControlName="attendedBy"
+            placeholder="Enter the name of the person who attended"
+            [class.error]="submitted && f['attendedBy'].errors"
+          />
+          <div class="error-message" *ngIf="submitted && f['attendedBy'].errors">
+            <span *ngIf="f['attendedBy'].errors['required']">Attended by field is required</span>
+            <span *ngIf="f['attendedBy'].errors['minlength']">Name must be at least 2 characters</span>
+            <span *ngIf="f['attendedBy'].errors['maxlength']">Name cannot exceed 100 characters</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Submit Section -->
+      <div class="form-actions">
+        <button type="submit" class="btn-submit" [disabled]="submitted && enquiryForm.invalid || isLoading">
+          <span *ngIf="!isLoading && (!submitted || enquiryForm.valid)">Submit Enquiry</span>
+          <span *ngIf="!isLoading && submitted && enquiryForm.invalid">Please fix errors</span>
+          <span *ngIf="isLoading">Submitting...</span>
+        </button>
+        
+        <button type="button" class="btn-reset" (click)="resetForm()" [disabled]="isLoading">
+          Reset Form
+        </button>
+      </div>
+
+    </form>
+  </div>
+</div>

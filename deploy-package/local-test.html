@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Survey Popup Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        .test-info {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+        .warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin: 0.5rem;
+        }
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Local Test Page</h1>
+        <p>This page tests your survey popup locally before deployment.</p>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> This test page only works when opened through a web server (not by double-clicking the file). 
+            Use a simple local server or deploy to test properly.
+        </div>
+
+        <div class="test-info">
+            <h3>How to Test Locally:</h3>
+            <p><strong>Option 1:</strong> Use Python (if installed)</p>
+            <code style="background: rgba(0, 0, 0, 0.3); padding: 0.5rem; border-radius: 4px; display: block; margin: 0.5rem 0;">
+                python -m http.server 8000
+            </code>
+            <p>Then open: <code>http://localhost:8000/local-test.html</code></p>
+            
+            <p><strong>Option 2:</strong> Use Node.js (if installed)</p>
+            <code style="background: rgba(0, 0, 0, 0.3); padding: 0.5rem; border-radius: 4px; display: block; margin: 0.5rem 0;">
+                npx http-server
+            </code>
+            
+            <p><strong>Option 3:</strong> Deploy to Netlify (Recommended)</p>
+            <p>Upload the entire folder to <a href="https://netlify.com" style="color: #fff; text-decoration: underline;">netlify.com</a></p>
+        </div>
+
+        <div style="margin-top: 2rem;">
+            <h3>Test Controls:</h3>
+            <button onclick="if(window.surveyPopup) window.surveyPopup.show(); else alert('Popup not loaded yet')">Show Popup</button>
+            <button onclick="if(window.surveyPopup) window.surveyPopup.hide(); else alert('Popup not loaded yet')">Hide Popup</button>
+            <button onclick="if(window.surveyPopup) window.surveyPopup.destroy(); else alert('Popup not loaded yet')">Destroy Popup</button>
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1rem; background: rgba(255, 255, 255, 0.1); border-radius: 8px;">
+            <h3>Next Steps:</h3>
+            <ol style="text-align: left;">
+                <li>Deploy to Netlify (drag & drop the entire folder)</li>
+                <li>Get your hosting URL</li>
+                <li>Use the script tag on any website</li>
+                <li>Test with the provided test.html file</li>
+            </ol>
+        </div>
+    </div>
+
+    <!-- Embed the survey popup -->
+    <script src="survey-popup-loader.js" 
+            data-title="Local Test Survey" 
+            data-position="bottom-left" 
+            data-delay="3000">
+    </script>
+
+    <script>
+        // Check if popup loaded successfully
+        setTimeout(() => {
+            if (window.surveyPopupWidget) {
+                console.log('✅ Survey popup loaded successfully!');
+                document.querySelector('.warning').innerHTML = '<strong>✅ Success!</strong> Survey popup is working correctly.';
+                document.querySelector('.warning').style.background = 'rgba(40, 167, 69, 0.2)';
+                document.querySelector('.warning').style.border = '1px solid rgba(40, 167, 69, 0.5)';
+            } else {
+                console.log('❌ Survey popup failed to load');
+                document.querySelector('.warning').innerHTML = '<strong>❌ Error:</strong> Survey popup failed to load. Check console for errors.';
+                document.querySelector('.warning').style.background = 'rgba(220, 53, 69, 0.2)';
+                document.querySelector('.warning').style.border = '1px solid rgba(220, 53, 69, 0.5)';
+            }
+        }, 5000);
+    </script>
+</body>
+</html> 

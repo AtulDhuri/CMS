@@ -1,0 +1,42 @@
+<div class="popup-container" *ngIf="isVisible">
+  <div class="popup">
+    <div class="popup-header">
+      <h3>Quick Survey</h3>
+      <button class="close-btn" (click)="closePopup()" type="button">
+        <span>&times;</span>
+      </button>
+    </div>
+    
+    <form [formGroup]="popupForm" (ngSubmit)="onSubmit()" class="popup-form">
+      <div class="form-group">
+        <label for="name">Name *</label>
+        <input 
+          type="text" 
+          id="name" 
+          formControlName="name" 
+          placeholder="Enter your name"
+          class="form-control"
+          [class.error]="popupForm.get('name')?.touched && popupForm.get('name')?.invalid"
+        >
+        <div class="error-message" *ngIf="nameError">{{ nameError }}</div>
+      </div>
+      
+      <div class="form-group">
+        <label for="email">Email *</label>
+        <input 
+          type="email" 
+          id="email" 
+          formControlName="email" 
+          placeholder="Enter your email"
+          class="form-control"
+          [class.error]="popupForm.get('email')?.touched && popupForm.get('email')?.invalid"
+        >
+        <div class="error-message" *ngIf="emailError">{{ emailError }}</div>
+      </div>
+      
+      <button type="submit" class="submit-btn" [disabled]="popupForm.invalid">
+        Submit
+      </button>
+    </form>
+  </div>
+</div> 

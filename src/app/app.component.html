@@ -1,0 +1,30 @@
+<!-- Corporate Header -->
+<header class="corporate-header">
+  <div class="header-container">
+    <div class="brand">
+      <div class="brand-logo">CL</div>
+      <div class="brand-text">
+        <h1>Customer Lead</h1>
+        <span>Management System</span>
+      </div>
+    </div>
+    <nav class="main-nav" *ngIf="isAuthenticated">
+      <a routerLink="/customers" routerLinkActive="active">Dashboard</a>
+      <a routerLink="/pending-customers" routerLinkActive="active">Pending</a>
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="main-content">
+  <router-outlet></router-outlet>
+</main>
+
+<!-- Survey Widget -->
+<script 
+  src="https://atuldhuri.github.io/Survey_Widget/survey-popup-loader.js"
+  data-title="Customer Feedback"
+  data-position="bottom-right"
+  data-delay="5000">
+</script>

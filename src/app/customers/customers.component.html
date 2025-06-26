@@ -1,0 +1,188 @@
+<div class="customer-details-container">
+    <div class="mode-toggle">
+      <button [class.active]="mode === 'add'" (click)="mode = 'add'">Add New Customer</button>
+      <button [class.active]="mode === 'search'" (click)="mode = 'search'">Search Existing Customer</button>
+    </div>
+  
+    <!-- Add New Customer Form -->
+    <!-- <form *ngIf="mode === 'add'" [formGroup]="enquiryForm" (ngSubmit)="onAddSubmit()" class="enquiry-form">
+      <h2>Add New Customer</h2>
+      <div class="form-row">
+        <label>First Name</label>
+        <input formControlName="firstName" type="text" [class.error]="submitted && f['firstName'].errors" />
+      </div>
+      <div class="form-row">
+        <label>Last Name</label>
+        <input formControlName="lastName" type="text" [class.error]="submitted && f['lastName'].errors" />
+      </div>
+      <div class="form-row">
+        <label>Email</label>
+        <input formControlName="email" type="email" [class.error]="submitted && f['email'].errors" />
+      </div>
+      <div class="form-row">
+        <label>Mobile</label>
+        <input formControlName="mobile" type="tel" maxlength="10" [class.error]="submitted && f['mobile'].errors" />
+      </div>
+      <div class="form-row">
+        <label>Address</label>
+        <input formControlName="address" type="text" [class.error]="submitted && f['address'].errors" />
+      </div>
+      <div class="form-row">
+        <label>Age</label>
+        <input formControlName="age" type="number" [class.error]="submitted && f['age'].errors" />
+      </div>
+      <div class="form-row">
+        <label>Income Source</label>
+        <select formControlName="incomeSource" [class.error]="submitted && f['incomeSource'].errors">
+          <option value="">Select</option>
+          <option *ngFor="let src of incomeSources" [value]="src.value">{{ src.label }}</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label>Monthly Income</label>
+        <input formControlName="monthlyIncome" type="number" [class.error]="submitted && f['monthlyIncome'].errors" />
+      </div>
+      <div class="form-row">
+        <label>Budget</label>
+        <input formControlName="budget" type="number" [class.error]="submitted && f['budget'].errors" />
+      </div>
+      <div class="form-row">
+        <label>Reference</label>
+        <select formControlName="reference" [class.error]="submitted && f['reference'].errors">
+          <option value="">Select</option>
+          <option *ngFor="let ref of referenceOptions" [value]="ref.value">{{ ref.label }}</option>
+        </select>
+      </div>
+      <div class="form-row" *ngIf="shouldShowReferencePerson()">
+        <label>Reference Person</label>
+        <input formControlName="referencePerson" type="text" [class.error]="submitted && f['referencePerson'].errors" />
+      </div>
+      <div class="form-row property-interests">
+        <label>Property Interests</label>
+        <div class="checkbox-group">
+          <label *ngFor="let interest of propertyInterests">
+            <input type="checkbox" [formControlName]="interest.value" (change)="onInterestChange($event, interest.value)" />
+            {{ interest.label }}
+          </label>
+        </div>
+        <div class="error-message" *ngIf="submitted && propertyInterestsGroup.errors?.['atLeastOneRequired']">
+          Please select at least one property interest.
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Remarks</label>
+        <input formControlName="remarks" type="text" [class.error]="submitted && f['remarks'].errors" />
+      </div>
+      <div class="form-row">
+        <label>Attended By</label>
+        <input formControlName="attendedBy" type="text" [class.error]="submitted && f['attendedBy'].errors" />
+      </div>
+      <div class="form-row">
+        <button type="submit" class="btn btn-danger fw-bold" [disabled]="isLoading">{{ isLoading ? 'Submitting...' : 'Submit' }}</button>
+      </div>
+      <div class="success-message" *ngIf="addSuccessMsg">{{ addSuccessMsg }}</div>
+      <div class="error-message" *ngIf="addErrorMsg">{{ addErrorMsg }}</div>
+    </form> -->
+  <div *ngIf="mode === 'add'" >
+    <app-enquiry-form></app-enquiry-form>
+  </div>
+    <!-- Search Existing Customer -->
+    <div *ngIf="mode === 'search'" class="search-section">
+      <!-- <form [formGroup]="searchForm" (ngSubmit)="onSearchSubmit()" class="search-form">
+        <label>Mobile Number</label>
+        <input formControlName="mobileNumber" type="tel" maxlength="10" [class.error]="searchSubmitted && searchF['mobileNumber'].errors" />
+        <button type="submit" class="btn btn-danger fw-bold" [disabled]="searchLoading">{{ searchLoading ? 'Searching...' : 'Search' }}</button>
+      </form> -->
+      <app-customer-details></app-customer-details>
+      <div class="error-message" *ngIf="searchErrorMsg">{{ searchErrorMsg }}</div>
+      <div *ngIf="foundCustomer" class="customer-details">
+        <!-- <form [formGroup]="customerForm" class="customer-form">
+          <h3>Customer Details</h3>
+          <div class="form-row">
+            <label>First Name</label>
+            <input formControlName="firstName" type="text" />
+          </div>
+          <div class="form-row">
+            <label>Last Name</label>
+            <input formControlName="lastName" type="text" />
+          </div>
+          <div class="form-row">
+            <label>Email</label>
+            <input formControlName="email" type="email" />
+          </div>
+          <div class="form-row">
+            <label>Mobile</label>
+            <input formControlName="mobile" type="tel" />
+          </div>
+          <div class="form-row">
+            <label>Address</label>
+            <input formControlName="address" type="text" />
+          </div>
+          <div class="form-row">
+            <label>Age</label>
+            <input formControlName="age" type="number" />
+          </div>
+          <div class="form-row">
+            <label>Income Source</label>
+            <input formControlName="incomeSource" type="text" />
+          </div>
+          <div class="form-row">
+            <label>Monthly Income</label>
+            <input formControlName="income" type="number" />
+          </div>
+          <div class="form-row">
+            <label>Budget</label>
+            <input formControlName="budget" type="number" />
+          </div>
+          <div class="form-row">
+            <label>Reference</label>
+            <input formControlName="reference" type="text" />
+          </div>
+          <div class="form-row" *ngIf="customerForm.get('reference')?.value === 'friend' || customerForm.get('reference')?.value === 'agent'">
+            <label>Reference Person</label>
+            <input formControlName="referencePerson" type="text" />
+          </div>
+          <div class="form-row property-interests">
+            <label>Property Interests</label>
+            <div class="checkbox-group" formGroupName="propertyInterests">
+              <label *ngFor="let interest of propertyInterests">
+                <input type="checkbox" [formControlName]="interest.value" />
+                {{ interest.label }}
+              </label>
+            </div>
+          </div>
+          <div class="form-row">
+            <label>Attended By</label>
+            <input [formControl]="newAttendedBy" type="text" placeholder="Enter name" />
+            <div *ngIf="newAttendedBy.touched && newAttendedBy.invalid" class="error-message">
+              <span *ngIf="newAttendedBy.errors?.['required']">Attended By is required</span>
+              <span *ngIf="newAttendedBy.errors?.['minlength']">Minimum 2 characters</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <label>Remarks</label>
+            <textarea [formControl]="newRemark" placeholder="Enter new remark" rows="3"></textarea>
+            <div *ngIf="newRemark.touched && newRemark.invalid" class="error-message">
+              <span *ngIf="newRemark.errors?.['required']">Remark is required</span>
+              <span *ngIf="newRemark.errors?.['minlength']">Minimum 5 characters</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <button type="button" class="btn btn-danger fw-bold" (click)="updateCustomer()" [disabled]="newRemark.invalid || newAttendedBy.invalid || isUpdating">
+              {{ isUpdating ? 'Updating...' : 'Update' }}
+            </button>
+          </div>
+          <div class="form-row" *ngIf="foundCustomer.remarks?.length">
+            <label>Remarks History</label>
+            <ul>
+              <li *ngFor="let remark of foundCustomer.remarks">
+                {{ remark.remark }} (by {{ remark.attendedBy }} on {{ remark.visitDate | date:'short' }})
+              </li>
+            </ul>
+          </div>
+        </form> -->
+        
+      </div>
+    </div>
+  </div>
+  
