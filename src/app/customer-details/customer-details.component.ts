@@ -23,15 +23,7 @@ export class CustomerDetailsComponent implements OnInit {
   newAttendedBy = this.fb.control('', [Validators.required, Validators.minLength(2)]);
   isUpdating = false;
 
-  incomeSources = [
-    'Salaried',
-    'Business Owner',
-    'Self Employed',
-    'Freelancer',
-    'Retired',
-    'Student',
-    'Other'
-  ];
+  incomeSources = ['Salary', 'Business', 'Freelance', 'Pension', 'Investment']
 
   referenceOptions = [
     'Advertisement',
@@ -39,8 +31,7 @@ export class CustomerDetailsComponent implements OnInit {
     'Friend/Family',
     'Website',
     'Person',
-    'Employee',
-    'Other'
+    'Employee'
   ];
 
   propertyInterests = [
@@ -107,7 +98,7 @@ export class CustomerDetailsComponent implements OnInit {
     // Watch for reference field changes to show/hide referencePerson
     this.customerForm.get('reference')?.valueChanges.subscribe(value => {
       const referencePersonControl = this.customerForm.get('referencePerson');
-      if (value === 'Person' || value === 'Employee') {
+      if (value === 'Person' || value === 'Employee' || value === 'Other') {
         referencePersonControl?.setValidators([Validators.required, Validators.minLength(2), Validators.maxLength(100)]);
       } else {
         referencePersonControl?.clearValidators();
@@ -220,7 +211,7 @@ export class CustomerDetailsComponent implements OnInit {
 
   shouldShowReferencePerson(): boolean {
     const reference = this.customerForm.get('reference')?.value;
-    return reference === 'Person' || reference === 'Employee';
+    return reference === 'Person' || reference === 'Employee' || reference === 'Other';
   }
 
   formatCurrency(value: number | undefined): string {
@@ -298,6 +289,8 @@ export class CustomerDetailsComponent implements OnInit {
         this.isUpdating = false;
         this.newRemark.reset();
         this.newAttendedBy.reset();
+        
+      //  this.showSearchForm = true;
         if (this.customer?.mobile) {
           this.fetchCustomerByMobile(this.customer.mobile); // Refresh details
         }

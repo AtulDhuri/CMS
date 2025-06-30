@@ -22,8 +22,7 @@ export class EnquiryFormComponent implements OnInit {
     { value: 'business', label: 'Business' },
     { value: 'freelance', label: 'Freelance' },
     { value: 'pension', label: 'Pension' },
-    { value: 'investment', label: 'Investment' },
-    { value: 'other', label: 'Other' }
+    { value: 'investment', label: 'Investment' }
   ];
 
   // Reference options
@@ -32,8 +31,7 @@ export class EnquiryFormComponent implements OnInit {
     { value: 'friend', label: 'Friend' },
     { value: 'advertisement', label: 'Advertisement' },
     { value: 'website', label: 'Website' },
-    { value: 'agent', label: 'Agent' },
-    { value: 'other', label: 'Other' }
+    { value: 'agent', label: 'Agent' }
   ];
 
   // Property interest options
@@ -90,7 +88,7 @@ export class EnquiryFormComponent implements OnInit {
     this.enquiryForm.get('reference')?.valueChanges.subscribe(value => {
       const referencePersonControl = this.enquiryForm.get('referencePerson');
       
-      if (value === 'friend' || value === 'agent') {
+      if (value === 'friend' || value === 'agent' || value === 'other') {
         referencePersonControl?.setValidators([Validators.required, Validators.minLength(2), Validators.maxLength(100)]);
       } else {
         referencePersonControl?.clearValidators();
@@ -119,7 +117,7 @@ export class EnquiryFormComponent implements OnInit {
   // Check if reference person field should be shown
   shouldShowReferencePerson(): boolean {
     const referenceValue = this.enquiryForm.get('reference')?.value;
-    return referenceValue === 'friend' || referenceValue === 'agent';
+    return referenceValue === 'friend' || referenceValue === 'agent' || referenceValue === 'other';
   }
 
   // Handle checkbox changes
