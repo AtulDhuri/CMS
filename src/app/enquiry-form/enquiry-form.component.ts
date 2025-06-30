@@ -68,6 +68,7 @@ export class EnquiryFormComponent implements OnInit {
       referencePerson: [''],
       remarks: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(1000)]],
       attendedBy: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
+      rating: ['', [Validators.required, Validators.min(1), Validators.max(10), Validators.pattern('^[0-9]+$')]],
       propertyInterests: this.fb.group({
         'studio-apt': [false],
         '1-bhk': [false],
@@ -195,7 +196,8 @@ export class EnquiryFormComponent implements OnInit {
     const remarksArray = [{
       remark: formValue.remarks,
       attendedBy: formValue.attendedBy,
-      visitDate: new Date().toISOString()
+      visitDate: new Date().toISOString(),
+      rating: Number(formValue.rating)
     }];
 
     return {

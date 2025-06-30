@@ -21,6 +21,7 @@ export class CustomerDetailsComponent implements OnInit {
   showSearchForm = true;
   newRemark = this.fb.control('', [Validators.required, Validators.minLength(5)]);
   newAttendedBy = this.fb.control('', [Validators.required, Validators.minLength(2)]);
+  newRating = this.fb.control('', [Validators.required, Validators.min(1), Validators.max(10), Validators.pattern('^[0-9]+$')]);
   isUpdating = false;
 
   incomeSources = ['Salary', 'Business', 'Freelance', 'Pension', 'Investment']
@@ -246,27 +247,23 @@ export class CustomerDetailsComponent implements OnInit {
       this.errorMsg = 'Customer ID is missing.';
       return;
     }
-
-    if ((this.newRemark.value || this.newAttendedBy.value) && (this.newRemark.invalid || this.newAttendedBy.invalid)) {
-        this.newRemark.markAsTouched();
-        this.newAttendedBy.markAsTouched();
-        return;
+    if ((this.newRemark.value || this.newAttendedBy.value || this.newRating.value) && (this.newRemark.invalid || this.newAttendedBy.invalid || this.newRating.invalid)) {
+      this.newRemark.markAsTouched();
+      this.newAttendedBy.markAsTouched();
+      this.newRating.markAsTouched();
+      return;
     }
-
     this.isUpdating = true;
-    
     const formValue = this.customerForm.getRawValue();
-
     const updatedRemarks = this.customer?.remarks ? [...(this.customer.remarks as any[])] : [];
-
-    if (this.newRemark.value && this.newAttendedBy.value) {
+    if (this.newRemark.value && this.newAttendedBy.value && this.newRating.value) {
       updatedRemarks.push({
         remark: this.newRemark.value,
         attendedBy: this.newAttendedBy.value,
-        visitDate: new Date().toISOString()
+        visitDate: new Date().toISOString(),
+        rating: Number(this.newRating.value)
       });
     }
-    
     const payload: Partial<CustomerEnquiry> = {
       firstName: formValue.firstName,
       lastName: formValue.lastName,
@@ -283,14 +280,12 @@ export class CustomerDetailsComponent implements OnInit {
       status: formValue.status,
       remarks: updatedRemarks
     };
-
     this.enquiryService.updateCustomer(this.customer.id, payload).subscribe({
       next: () => {
         this.isUpdating = false;
         this.newRemark.reset();
         this.newAttendedBy.reset();
-        
-      //  this.showSearchForm = true;
+        this.newRating.reset();
         if (this.customer?.mobile) {
           this.fetchCustomerByMobile(this.customer.mobile); // Refresh details
         }

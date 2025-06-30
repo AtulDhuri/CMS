@@ -167,6 +167,15 @@
               <span *ngIf="newRemark.errors?.['minlength']">Minimum 5 characters</span>
             </div>
           </div>
+          <div class="form-row small-box">
+            <label>Rating (out of 10) <span style="color: red">*</span></label>
+            <input type="text" [formControl]="newRating" maxlength="2" pattern="^(10|[1-9])$" placeholder="1-10" style="width: 150px;" />
+            <div *ngIf="newRating.touched && newRating.invalid" class="error-message">
+              <span *ngIf="newRating.errors?.['required']">Rating is required</span>
+              <span *ngIf="newRating.errors?.['min'] || newRating.errors?.['max']">Enter a whole number between 1 and 10</span>
+              <span *ngIf="newRating.errors?.['pattern']">Only whole numbers allowed (1-10)</span>
+            </div>
+          </div>
           <div class="form-row">
             <button type="button" class="btn btn-danger fw-bold" (click)="updateCustomer()" [disabled]="newRemark.invalid || newAttendedBy.invalid || isUpdating">
               {{ isUpdating ? 'Updating...' : 'Update' }}
@@ -176,7 +185,7 @@
             <label>Remarks History</label>
             <ul>
               <li *ngFor="let remark of foundCustomer.remarks">
-                {{ remark.remark }} (by {{ remark.attendedBy }} on {{ remark.visitDate | date:'short' }})
+                {{ remark.remark }} (by {{ remark.attendedBy }} on {{ remark.visitDate | date:'short' }}, Rating: {{ remark.rating }}/10)
               </li>
             </ul>
           </div>
