@@ -195,10 +195,6 @@ export class CustomerDetailsComponent implements OnInit {
           attendedBy: firstRemark.attendedBy
         });
       }
-
-      // Only enable remarks and attendedBy for editing
-      this.customerForm.get('remarks')?.enable();
-      this.customerForm.get('attendedBy')?.enable();
     }
   }
 
@@ -251,23 +247,53 @@ export class CustomerDetailsComponent implements OnInit {
   }
 
   updateCustomer(): void {
-    if (this.newRemark.invalid || this.newAttendedBy.invalid) return;
+    if (this.customerForm.invalid) {
+      this.customerForm.markAllAsTouched();
+      return;
+    }
     if (!this.customer?.id) {
       this.errorMsg = 'Customer ID is missing.';
       return;
     }
+
+    if ((this.newRemark.value || this.newAttendedBy.value) && (this.newRemark.invalid || this.newAttendedBy.invalid)) {
+        this.newRemark.markAsTouched();
+        this.newAttendedBy.markAsTouched();
+        return;
+    }
+
     this.isUpdating = true;
-    // Prepare updated remarks array
-    const updatedRemarks = [
-      ...((this.customer?.remarks as any[]) || []),
-      {
+    
+    const formValue = this.customerForm.getRawValue();
+
+    const updatedRemarks = this.customer?.remarks ? [...(this.customer.remarks as any[])] : [];
+
+    if (this.newRemark.value && this.newAttendedBy.value) {
+      updatedRemarks.push({
         remark: this.newRemark.value,
         attendedBy: this.newAttendedBy.value,
         visitDate: new Date().toISOString()
-      }
-    ];
+      });
+    }
+    
+    const payload: Partial<CustomerEnquiry> = {
+      firstName: formValue.firstName,
+      lastName: formValue.lastName,
+      email: formValue.email,
+      mobile: formValue.mobile,
+      address: formValue.address,
+      age: formValue.age,
+      incomeSource: formValue.incomeSource,
+      income: formValue.income,
+      budget: formValue.budget,
+      reference: formValue.reference,
+      referencePerson: formValue.referencePerson,
+      propertyInterests: formValue.propertyInterests,
+      status: formValue.status,
+      remarks: updatedRemarks
+    };
 
-    this.enquiryService.updateCustomer(this.customer.id, { remarks: updatedRemarks }).subscribe({
+    this.enquiryService.updateCustomer(this.customer.id, payload).subscribe({
       next: () => {
         this.isUpdating = false;
         this.newRemark.reset();
