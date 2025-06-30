@@ -27,6 +27,7 @@ export interface CustomerEnquiry {
     remark: string;
     attendedBy: string;
     visitDate: string;
+    rating: number;
   }[];
 }
 

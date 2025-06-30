@@ -33,6 +33,7 @@ export class CustomersComponent implements OnInit{
   customerForm: FormGroup;
   newRemark = this.fb.control('', [Validators.required, Validators.minLength(5)]);
   newAttendedBy = this.fb.control('', [Validators.required, Validators.minLength(2)]);
+  newRating = this.fb.control('', [Validators.required, Validators.min(1), Validators.max(10), Validators.pattern('^[0-9]+$')]);
   isUpdating = false;
 
   // Options (reuse from enquiry form)
@@ -241,7 +242,7 @@ export class CustomersComponent implements OnInit{
   }
 
   updateCustomer(): void {
-    if (this.newRemark.invalid || this.newAttendedBy.invalid) return;
+    if (this.newRemark.invalid || this.newAttendedBy.invalid || this.newRating.invalid) return;
     if (!this.foundCustomer?.id) {
       this.searchErrorMsg = 'Customer ID is missing.';
       return;
@@ -252,7 +253,8 @@ export class CustomersComponent implements OnInit{
       {
         remark: this.newRemark.value,
         attendedBy: this.newAttendedBy.value,
-        visitDate: new Date().toISOString()
+        visitDate: new Date().toISOString(),
+        rating: Number(this.newRating.value)
       }
     ];
     const formValue = this.customerForm.getRawValue();
@@ -282,6 +284,7 @@ export class CustomersComponent implements OnInit{
         this.isUpdating = false;
         this.newRemark.reset();
         this.newAttendedBy.reset();
+        this.newRating.reset();
         this.onSearchSubmit(); // Refresh details
       },
       error: (err: any) => {
@@ -307,7 +310,8 @@ export class CustomersComponent implements OnInit{
     const remarksArray = [{
       remark: formValue.remarks,
       attendedBy: formValue.attendedBy,
-      visitDate: new Date().toISOString()
+      visitDate: new Date().toISOString(),
+      rating: Number(formValue.rating)
     }];
     return {
       firstName: formValue.firstName,
